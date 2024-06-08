@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from flask import Blueprint, render_template, redirect, request, url_for
+from flask import Blueprint, render_template, redirect, request, url_for # type: ignore
 from .forms import AppointmentForm
 import sqlite3
 import os
@@ -58,9 +58,11 @@ def daily(year, month, day):
         formatted_row = (
             row[0],
             row[1],
-        start_datetime.strftime('%H:%M'),
-        end_datetime.strftime('%H:%M')
-    )
-    formatted_rows.append(formatted_row)
+            start_datetime.strftime('%H:%M'),
+            end_datetime.strftime('%H:%M'),
+            
+        )
+        formatted_rows.append(formatted_row)
+    print(formatted_rows)
 
     return render_template('main.html', rows=formatted_rows, form=form,  day=day )
