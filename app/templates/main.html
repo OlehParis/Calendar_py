@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../static/styles.css">
+    <title>Flask App</title>
+</head>
+<body>
+    <h1>Calendar App</h1>
+   <div id="home">
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div>
+            {{ form.name.label }} {{ form.name }}
+        </div>
+        <div>
+            {{ form.start_date.label }} {{ form.start_date }}
+            {{ form.start_time.label }} {{ form.start_time }}
+        </div>
+        <div>
+            {{ form.end_date.label }} {{ form.end_date }}
+            {% if form.end_date.errors %}
+             <ul class="errors">
+                {% for error in form.end_date.errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+             </ul>
+             {% endif %}
+            {{ form.end_time.label }} {{ form.end_time }}
+        </div>
+        <div>
+            {{ form.description.label }} {{ form.description }}
+        </div>
+        <div>
+            {{ form.private.label }} {{ form.private }}
+        </div>
+        <div>
+            {{ form.submit() }}
+        </div>
+    </form>
+    <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Start</th>
+            <th>End</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- loop here to create rows -->
+          {% for row in rows %}
+            <tr>
+                <td>{{ row[1] }}</td>
+                <td>{{ row[2] }}</td>
+                <td>{{ row[3] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
