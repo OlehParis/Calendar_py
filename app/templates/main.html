@@ -1,64 +1,56 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="../static/styles.css">
-    <title>Flask App</title>
+    <title>Daily Appointments</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='calendar.css') }}">
 </head>
 <body>
-    <h1>Calendar App</h1>
-   <div id="home">
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        <div>
-            {{ form.name.label }} {{ form.name }}
-        </div>
-        <div>
-            {{ form.start_date.label }} {{ form.start_date }}
-            {{ form.start_time.label }} {{ form.start_time }}
-        </div>
-        <div>
-            {{ form.end_date.label }} {{ form.end_date }}
-            {% if form.end_date.errors %}
-             <ul class="errors">
-                {% for error in form.end_date.errors %}
-                <li>{{ error }}</li>
-                {% endfor %}
-             </ul>
-             {% endif %}
-            {{ form.end_time.label }} {{ form.end_time }}
-        </div>
-        <div>
-            {{ form.description.label }} {{ form.description }}
-        </div>
-        <div>
-            {{ form.private.label }} {{ form.private }}
-        </div>
-        <div>
-            {{ form.submit() }}
-        </div>
-    </form>
-    <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Start</th>
-            <th>End</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- loop here to create rows -->
-          {% for row in rows %}
-            <tr>
-                <td>{{ row[1] }}</td>
-                <td>{{ row[2] }}</td>
-                <td>{{ row[3] }}</td>
-            </tr>
+    <h1>Appointments for {{ year }}-{{ month }}-{{ day }}</h1>
+    <div class="calendar">
+        <div class="time-column">
+            {% for hour in range(1, 24) %}
+                <div class="time-slot">{{ '{:02d}:00'.format(hour) }}</div>
             {% endfor %}
-        </tbody>
-    </table>
-</div>
+        </div>
+        <div class="events-column">
+            {% for hour in range(1, 24) %}
+                <div class="event-slot">
+                    {% for appointment in rows %}
+                        {% if appointment[2][:2] == '{:02d}'.format(hour) %}
+                            <div class="appointment">
+                                <div class="time">{{ appointment[2] }} - {{ appointment[3] }}</div>
+                                <div class="description">{{ appointment[1] }}</div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+  
+    <form method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.name.label }}<br>
+            {{ form.name(size=32) }}
+        </p>
+        <p>
+            {{ form.start_date.label }}<br>
+            {{ form.start_date() }} {{ form.start_time() }}
+        </p>
+        <p>
+            {{ form.end_date.label }}<br>
+            {{ form.end_date() }} {{ form.end_time() }}
+        </p>
+        <p>
+            {{ form.description.label }}<br>
+            {{ form.description(rows=4, cols=40) }}
+        </p>
+        <p>
+            {{ form.private.label }} {{ form.private() }}
+        </p>
+        <p><input type="submit" value="Add Appointment"></p>
+    </form>
 </body>
 </html>

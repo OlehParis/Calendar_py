@@ -19,4 +19,4 @@ class AppointmentForm(FlaskForm):
         if start >= end:
             msg = "End date/time must come after start date/time"
             raise ValidationError(msg)
-        
+     

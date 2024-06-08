@@ -1,14 +1,19 @@
-from crypt import methods
+from datetime import datetime, timedelta
+from flask import Blueprint, render_template, redirect, request, url_for
+from .forms import AppointmentForm
 import sqlite3
 import os
-from datetime import datetime
-from flask import Blueprint, render_template, redirect, request
-from .forms import AppointmentForm
-bp = Blueprint('main', __name__ , url_prefix='/')
+
+bp = Blueprint('main', __name__, url_prefix='/')
 DB_FILE = os.environ.get("DB_FILE")
 
-@bp.route('/', methods=['GET','POST'])
+@bp.route("/")
 def main():
+    d = datetime.now()
+    return redirect(url_for(".daily", year=d.year, month=d.month, day=d.day))
+
+@bp.route("/<int:year>/<int:month>/<int:day>", methods=['GET', 'POST'])
+def daily(year, month, day):
     form = AppointmentForm()
     if request.method == 'POST' and form.validate_on_submit():
         # Extract form data
@@ -28,19 +33,23 @@ def main():
         """, (name, datetime.combine(start_date, start_time), datetime.combine(end_date, end_time), description, private))
         conn.commit()
         conn.close()
-        return redirect('/')
 
+        return redirect('/')
+    
+    day = datetime(year, month, day)
+    one_day = timedelta(days=1)
+    next_day = day + one_day
+    
+    # Fetch appointments for the specified day
     conn = sqlite3.connect(DB_FILE)
-    # Create a cursor from the connection
     cursor = conn.cursor()
-    # Execute the SQL query
     cursor.execute("""
-        SELECT id, name, start_datetime, end_datetime, description, private
+        SELECT id, name, start_datetime, end_datetime
         FROM appointments
-        ORDER BY start_datetime;
-    """)
-    # Fetch all of the records
+        WHERE start_datetime BETWEEN :day AND :next_day
+        ORDER BY start_datetime""", {'day': day, 'next_day': next_day})
     rows = cursor.fetchall()
+    conn.close()
 
     formatted_rows = []
     for row in rows:
@@ -49,12 +58,9 @@ def main():
         formatted_row = (
             row[0],
             row[1],
-            start_datetime.strftime('%H:%M'),
-            end_datetime.strftime('%H:%M'),
-            row[4],
-            row[5]
-        )
-        formatted_rows.append(formatted_row)
-    # Close the connection
-    conn.close()
-    return render_template('main.html', rows=formatted_rows, form=form)
+        start_datetime.strftime('%H:%M'),
+        end_datetime.strftime('%H:%M')
+    )
+    formatted_rows.append(formatted_row)
+
+    return render_template('main.html', rows=formatted_rows, form=form,  day=day )

@@ -1,0 +1,75 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.calendar {
+    display: flex;
+    margin: 20px auto;
+    width: 80%;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.time-column, .events-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.time-column {
+    flex: 0 0 50px;
+    border-right: 1px solid #ddd;
+}
+
+.events-column {
+    flex: 1;
+}
+
+.time-slot, .event-slot {
+    height: 60px; /* Adjust the height to your preference */
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.time-slot {
+    background-color: #f9f9f9;
+    text-align: center;
+    font-size: 14px;
+}
+
+.event-slot {
+    position: relative;
+}
+
+.appointment {
+    display: flex;
+    margin-left: 20px;
+    position: absolute;
+    background-color: #ffeb3b;
+    padding: 5px;
+    border-radius: 3px;
+    border: 1px solid #f0c14b;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+}
+.description {
+    margin-left: 20px;
+}
+.appointment .time {
+    font-weight: bold;
+}
+form {
+    margin-top: 300px;
+    margin-left: 30px;
+}
